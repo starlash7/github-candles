@@ -36,14 +36,20 @@ def fetch_days():
         for d in w["contributionDays"])
 
 def mock_days():
-    import random; random.seed(7)
+    import random, math; random.seed(11)
     today = datetime.date.today()
-    days, v = [], 10
+    days = []
     d = today - datetime.timedelta(days=364)
+    i = 0
     while d <= today:
-        v = max(0, v + random.choice([-3,-2,-1,0,1,2,3,4]))
-        days.append((d.isoformat(), max(0, int(v + random.gauss(0,2)))))
-        d += datetime.timedelta(days=1)
+        base = 3 + 5 * (i / 364)                    
+        weekly = 1.0 + 0.5 * math.sin(i / 7 * math.pi)  
+        sprint = 8 if (i // 7) % 9 == 7 else 0       
+        rest = 0.15 if (i // 7) % 13 == 12 else 1.0  
+        weekend = 0.4 if d.weekday() >= 5 else 1.0   
+        v = (base * weekly + sprint) * rest * weekend
+        days.append((d.isoformat(), max(0, int(v + random.gauss(0, 1.2)))))
+        d += datetime.timedelta(days=1); i += 1
     return days
 
 def weekly_candles(days):
