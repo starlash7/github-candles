@@ -1,0 +1,31 @@
+name: github candles
+on:
+  schedule:
+    - cron: "0 15 * * *"   # daily 00:00 KST — change for your timezone
+  workflow_dispatch:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  chart:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: generate
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_USER: ${{ github.repository_owner }}   # zero config
+        run: |
+          MODE=year  OUT=chart-year.svg  python generate_chart.py
+          MODE=month OUT=chart-month.svg python generate_chart.py
+      - name: commit
+        run: |
+          git config user.name "github-candles[bot]"
+          git config user.email "actions@users.noreply.github.com"
+          git add chart-year.svg chart-month.svg
+          git diff --cached --quiet || git commit -m "chart: $(date +%F)"
+          git push
