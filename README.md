@@ -6,11 +6,11 @@
 
 Every commit is a trade. Every week prints a candle. Green weeks you shipped, red weeks you didn't.
 
-<img src="examples/chart-year.svg" width="100%" alt="52-week contribution candlestick chart"/>
+<img src="chart-year.svg" width="100%" alt="52-week contribution candlestick chart"/>
 
 *52-week view — one candle per week, rolling year*
 
-<img src="examples/chart-month.svg" width="100%" alt="daily contribution candles, current month"/>
+<img src="chart-month.svg" width="100%" alt="daily contribution candles, current month"/>
 
 *Session view — one candle per day, resets monthly like a real trading session*
 
