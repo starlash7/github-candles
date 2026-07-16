@@ -1,11 +1,11 @@
 <svg width="920" height="430" viewBox="0 0 920 430" xmlns="http://www.w3.org/2000/svg">
 <rect x="0.5" y="0.5" width="919" height="429" rx="14" fill="#0B0E11" stroke="#1B2130"/>
 <text x="26" y="34" font-family="ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif" font-size="13" font-weight="700" letter-spacing="1.2" fill="#EAECEF">STARLASH7 · COMMITS<tspan fill="#6E7887" font-weight="500" letter-spacing="0.6">  1W · LAST 52W</tspan></text>
-<text x="26" y="70" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="32" font-weight="800" fill="#F6465D" letter-spacing="-0.5">23</text>
+<text x="26" y="70" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="32" font-weight="800" fill="#F6465D" letter-spacing="-0.5">27</text>
 <rect x="80" y="50" width="109" height="24" rx="6" fill="#F6465D" opacity="0.14"/>
-<text x="134" y="66" text-anchor="middle" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="12" font-weight="700" fill="#F6465D">-35 (-60.3%)</text>
-<text x="844" y="34" text-anchor="end" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="11" letter-spacing="0.3"><tspan fill="#6E7887">O</tspan> <tspan fill="#F6465D">58</tspan>  <tspan fill="#6E7887">H</tspan> <tspan fill="#F6465D">58</tspan>  <tspan fill="#6E7887">L</tspan> <tspan fill="#F6465D">23</tspan>  <tspan fill="#6E7887">C</tspan> <tspan fill="#F6465D">23</tspan></text>
-<text x="844" y="54" text-anchor="end" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="11" letter-spacing="0.3"><tspan fill="#6E7887">YTD</tspan> <tspan fill="#EAECEF">1,003</tspan>  <tspan fill="#6E7887">CANDLES</tspan> <tspan fill="#EAECEF">52</tspan></text>
+<text x="134" y="66" text-anchor="middle" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="12" font-weight="700" fill="#F6465D">-31 (-53.4%)</text>
+<text x="844" y="34" text-anchor="end" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="11" letter-spacing="0.3"><tspan fill="#6E7887">O</tspan> <tspan fill="#F6465D">58</tspan>  <tspan fill="#6E7887">H</tspan> <tspan fill="#F6465D">58</tspan>  <tspan fill="#6E7887">L</tspan> <tspan fill="#F6465D">27</tspan>  <tspan fill="#6E7887">C</tspan> <tspan fill="#F6465D">27</tspan></text>
+<text x="844" y="54" text-anchor="end" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="11" letter-spacing="0.3"><tspan fill="#6E7887">YTD</tspan> <tspan fill="#EAECEF">1,007</tspan>  <tspan fill="#6E7887">CANDLES</tspan> <tspan fill="#EAECEF">52</tspan></text>
 <line x1="18" y1="82" x2="902" y2="82" stroke="#1B2130" stroke-width="1"/>
 <text x="437.0" y="222.0" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif" font-size="38" font-weight="800" letter-spacing="6" fill="#EAECEF" opacity="0.035">STARLASH7</text>
 <line x1="18" y1="271.0" x2="856" y2="271.0" stroke="#161C26" stroke-width="1"/>
@@ -17,9 +17,9 @@
 <line x1="18" y1="88.0" x2="856" y2="88.0" stroke="#161C26" stroke-width="1"/>
 <text x="866" y="91.5" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="10.5" fill="#6E7887">126</text>
 <line x1="856" y1="82" x2="856" y2="400" stroke="#242B38" stroke-width="1"/>
-<line x1="18" y1="287.6" x2="856" y2="287.6" stroke="#F6465D" stroke-width="1" stroke-dasharray="2 4" opacity="0.55"/>
-<rect x="860" y="277.6" width="50" height="20" rx="5" fill="#F6465D"/>
-<text x="885.0" y="291.4" text-anchor="middle" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="11.5" font-weight="800" fill="#0B0E11">23</text>
+<line x1="18" y1="279.9" x2="856" y2="279.9" stroke="#F6465D" stroke-width="1" stroke-dasharray="2 4" opacity="0.55"/>
+<rect x="860" y="269.9" width="50" height="20" rx="5" fill="#F6465D"/>
+<text x="885.0" y="283.7" text-anchor="middle" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="11.5" font-weight="800" fill="#0B0E11">27</text>
 <line x1="26.1" y1="332.0" x2="26.1" y2="332.0" stroke="#0ECB81" stroke-width="1"/>
 <rect x="21.2" y="332.0" width="9.7" height="1.4" rx="1" fill="#0ECB81"/>
 <line x1="42.2" y1="326.2" x2="42.2" y2="332.0" stroke="#0ECB81" stroke-width="1"/>
@@ -122,9 +122,9 @@
 <rect x="810.9" y="119.8" width="9.7" height="125.4" rx="1" fill="#0ECB81"/>
 <line x1="831.8" y1="119.8" x2="831.8" y2="220.1" stroke="#F6465D" stroke-width="1"/>
 <rect x="827.0" y="119.8" width="9.7" height="100.3" rx="1" fill="#F6465D"/>
-<line x1="847.9" y1="220.1" x2="847.9" y2="287.6" stroke="#F6465D" stroke-width="1"/>
-<rect x="843.1" y="220.1" width="9.7" height="67.5" rx="1" fill="#F6465D"/>
-<text x="26" y="355" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="10" letter-spacing="0.5" fill="#6E7887">VOL <tspan fill="#F6465D">23</tspan></text>
+<line x1="847.9" y1="220.1" x2="847.9" y2="279.9" stroke="#F6465D" stroke-width="1"/>
+<rect x="843.1" y="220.1" width="9.7" height="59.8" rx="1" fill="#F6465D"/>
+<text x="26" y="355" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="10" letter-spacing="0.5" fill="#6E7887">VOL <tspan fill="#F6465D">27</tspan></text>
 <rect x="21.2" y="400.0" width="9.7" height="1.0" rx="1" fill="#0ECB81" opacity="0.42"/>
 <rect x="37.3" y="398.9" width="9.7" height="1.1" rx="1" fill="#0ECB81" opacity="0.42"/>
 <rect x="53.5" y="400.0" width="9.7" height="1.0" rx="1" fill="#F6465D" opacity="0.42"/>
@@ -176,7 +176,7 @@
 <rect x="794.8" y="383.6" width="9.7" height="16.4" rx="1" fill="#F6465D" opacity="0.42"/>
 <rect x="810.9" y="360.0" width="9.7" height="40.0" rx="1" fill="#0ECB81" opacity="0.42"/>
 <rect x="827.0" y="378.9" width="9.7" height="21.1" rx="1" fill="#F6465D" opacity="0.42"/>
-<rect x="843.1" y="391.6" width="9.7" height="8.4" rx="1" fill="#F6465D" opacity="0.42"/>
+<rect x="843.1" y="390.2" width="9.7" height="9.8" rx="1" fill="#F6465D" opacity="0.42"/>
 <text x="58.3" y="418" text-anchor="middle" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="10" fill="#6E7887">AUG</text>
 <text x="122.8" y="418" text-anchor="middle" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="10" fill="#6E7887">SEP</text>
 <text x="203.3" y="418" text-anchor="middle" font-family="ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace" font-size="10" fill="#6E7887">OCT</text>
