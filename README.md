@@ -14,9 +14,9 @@ Every commit is a trade. Every week prints a candle. Green weeks you shipped, re
 
 *Session view — one candle per day, resets monthly like a real trading session*
 
-<img src="chart-daily.svg" width="100%" alt="180-day daily contribution candles with MA20 and MA50"/>
+<img src="chart-daily.svg" width="100%" alt="180-day daily contribution candles"/>
 
-*Daily view — 180 daily candles with MA20 / MA50 moving averages*
+*Daily view — 180 daily candles, rolling*
 
 </div>
 
@@ -30,7 +30,6 @@ Every commit is a trade. Every week prints a candle. Green weeks you shipped, re
 | 🔴 Red candle | You committed less |
 | Volume bars | Raw commit count |
 | Last-price tag | Your latest period's commits |
-| MA20 / MA50 | 20- and 50-day average of daily commits (daily view) |
 | `YTD` / `MTD` | Total contributions in range |
 
 Exchange-grade UI: OHLC readout, right-side price axis, last-price line, Binance-style palette. No stats cards. No trophies. Just price action.
@@ -57,7 +56,7 @@ Done. It self-updates daily on the default `GITHUB_TOKEN` — no PAT, no config.
 
 | Option | Where | Values |
 |--------|-------|--------|
-| `MODE` | env in `chart.yml` | `year` (52 weekly candles) / `month` (daily, resets on the 1st) / `daily` (last 180 days + MA20/MA50) |
+| `MODE` | env in `chart.yml` | `year` (52 weekly candles) / `month` (daily, resets on the 1st) / `daily` (last 180 days) |
 | `OUT` | env in `chart.yml` | output filename |
 | Update time | `cron` in `chart.yml` | default `0 15 * * *` = 00:00 KST |
 | Colors | constants in `generate_chart.py` | `GREEN` / `RED` / `BG` etc. |
