@@ -1,0 +1,28 @@
+name: check
+on:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: render all modes (mock data, no token)
+        run: |
+          mkdir -p out
+          for m in year month daily; do
+            MODE=$m OUT=out/chart-$m.svg python generate_chart.py
+          done
+      - name: validate SVG
+        run: |
+          python - <<'PY'
+          import xml.etree.ElementTree as ET
+          for m in ("year", "month", "daily"):
+              root = ET.parse(f"out/chart-{m}.svg").getroot()
+              assert root.tag.endswith("svg"), m
+              print(m, "ok")
+          PY

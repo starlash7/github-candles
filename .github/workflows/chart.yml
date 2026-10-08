@@ -22,10 +22,11 @@ jobs:
         run: |
           MODE=year  OUT=chart-year.svg  python generate_chart.py
           MODE=month OUT=chart-month.svg python generate_chart.py
+          MODE=daily OUT=chart-daily.svg python generate_chart.py
       - name: commit
         run: |
           git config user.name "github-candles[bot]"
           git config user.email "actions@users.noreply.github.com"
-          git add chart-year.svg chart-month.svg
+          git add chart-year.svg chart-month.svg chart-daily.svg
           git diff --cached --quiet || git commit -m "chart: $(date +%F)"
           git push
