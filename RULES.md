@@ -16,8 +16,10 @@ These rules apply to the whole repository, for humans and coding agents alike.
 
 - The GitHub contributions API returns one total per day. True intraday OHLC
   does not exist.
-- Candles use `open = previous period total`, `close = current period total`,
+- Candles use `open = previous period price`, `close = current period price`,
   `high = max(open, close)`, `low = min(open, close)`.
+- Price is the period total for `year` (week) and `month` (day). For `daily`
+  it is the trailing 7-day total; volume is the day's own count.
 - Never synthesize wicks, intraday highs/lows, or any value not derived from
   real contribution counts. Derived indicators (e.g. moving averages) are fine.
 - Mock data is only for local runs and CI checks without a token. Never commit

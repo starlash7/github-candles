@@ -2,7 +2,7 @@
 """github-candles — contributions as a trading chart.
 MODE=year (default): 52 weekly candles, rolling 1 year.
 MODE=month: daily candles, current month session.
-MODE=daily: 180 daily candles, rolling.
+MODE=daily: 180 daily candles, price = trailing 7-day total.
 Zero config in Actions: GH_USER auto = repo owner.
 """
 import os, json, datetime, urllib.request
@@ -16,7 +16,7 @@ BG, FRAME   = "#0B0E11", "#1B2130"
 GRID, AXIS  = "#161C26", "#242B38"
 TEXT, SUB   = "#EAECEF", "#6E7887"
 GREEN, RED  = "#0ECB81", "#F6465D"
-DAILY_N = 180
+DAILY_N, DAILY_W = 180, 7
 SANS = "ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif"
 MONO = "ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace"
 
@@ -81,6 +81,27 @@ def daily_candles(days, since):
         prev = c
     return out
 
+def rolling_candles(days, since, w=DAILY_W):
+    """Price = trailing w-day total. o = yesterday's price, c = today's, v = day count."""
+    vals, prev, out = [c for _, c in days], None, []
+    for i, (date, v) in enumerate(days):
+        p = sum(vals[max(0, i-w+1):i+1])
+        if date >= since:
+            o = prev if prev is not None else p
+            out.append({"key": datetime.date.fromisoformat(date), "o": o,
+                        "h": max(o,p), "l": min(o,p), "c": p, "v": v})
+        prev = p
+    return out
+
+def nice_ticks(lo, hi, count=4):
+    """Round axis bounds and a 1/2/5 x 10^k step covering [lo, hi]."""
+    raw = max(hi - lo, 1) / count
+    mag = 10 ** len(str(int(raw))) / 10
+    step = next(m * mag for m in (1, 2, 5, 10) if m * mag >= raw)
+    lo = int(lo // step) * step
+    hi = max(-int(-hi // step) * step, lo + step)
+    return lo, hi, [lo + step*k for k in range(1, int((hi-lo)/step) + 1)]
+
 def render(cd, path, mode):
     W, H = 920, 430
     PL, AXIS_W, HEAD, VOL_H, XAX, GAP = 18, 64, 88, 56, 30, 12
@@ -94,7 +115,10 @@ def render(cd, path, mode):
     slot = plot_w / max(n, 1)
     bw   = slot * 0.7 if mode == "daily" else max(4, min(13, slot * 0.6))
 
-    def y(v):  return HEAD + price_h - (v/hi)*price_h
+    lo, ticks = 0, [hi*gv for gv in (0.25, 0.5, 0.75, 1.0)]
+    if mode == "daily":
+        lo, hi, ticks = nice_ticks(min(c["l"] for c in cd), max(c["h"] for c in cd) * 1.05)
+    def y(v):  return HEAD + price_h - ((v-lo)/(hi-lo))*price_h
     def x(i):  return PL + slot*i + slot/2
 
     last  = cd[-1]
@@ -109,7 +133,7 @@ def render(cd, path, mode):
         tf_label = "1W · LAST 52W"
         sum_label = ("YTD", f"{total:,}")
     elif mode == "daily":
-        tf_label = f"1D · LAST {n}D"
+        tf_label = f"1D · {DAILY_W}D TOTAL · LAST {n}D"
         sum_label = (f"{n}D", f"{total:,}")
     else:
         mname = datetime.date.today().strftime("%b %Y").upper()
@@ -144,10 +168,10 @@ def render(cd, path, mode):
     s.append(f'<text x="{PL+plot_w/2}" y="{HEAD+price_h/2+12}" text-anchor="middle" font-family="{SANS}" font-size="38" font-weight="800" letter-spacing="6" fill="{TEXT}" opacity="0.035">{GH_USER.upper()}</text>')
 
     # grid + right axis
-    for gv in (0.25, 0.5, 0.75, 1.0):
-        gy = HEAD + price_h*(1-gv)
+    for tv in ticks:
+        gy = y(tv)
         s.append(f'<line x1="{PL}" y1="{gy:.1f}" x2="{PL+plot_w}" y2="{gy:.1f}" stroke="{GRID}" stroke-width="1"/>')
-        s.append(f'<text x="{W-AXIS_W+10}" y="{gy+3.5:.1f}" font-family="{MONO}" font-size="10.5" fill="{SUB}">{hi*gv:.0f}</text>')
+        s.append(f'<text x="{W-AXIS_W+10}" y="{gy+3.5:.1f}" font-family="{MONO}" font-size="10.5" fill="{SUB}">{tv:.0f}</text>')
     s.append(f'<line x1="{W-AXIS_W}" y1="{HEAD-6}" x2="{W-AXIS_W}" y2="{vol_top+VOL_H}" stroke="{AXIS}" stroke-width="1"/>')
 
     # last price tag
@@ -169,7 +193,7 @@ def render(cd, path, mode):
     for i, c in enumerate(cd):
         cx, col = x(i), (GREEN if c["c"] >= c["o"] else RED)
         vh = (c["v"]/vmax)*(VOL_H-16)
-        s.append(f'<rect x="{cx-bw/2:.1f}" y="{vol_top+VOL_H-vh:.1f}" width="{bw:.1f}" height="{max(vh,1):.1f}" rx="1" fill="{col}" opacity="0.42"/>')
+        s.append(f'<rect x="{cx-bw/2:.1f}" y="{vol_top+VOL_H-vh:.1f}" width="{bw:.1f}" height="{max(vh,1):.1f}" rx="1" fill="{col}" opacity="{0.7 if mode == "daily" else 0.42}"/>')
 
     # x labels
     if mode == "year" or mode == "daily":
@@ -194,7 +218,7 @@ def main():
     if MODE == "year":
         cd = weekly_candles(days)
     elif MODE == "daily":
-        cd = daily_candles(days, (today - datetime.timedelta(days=DAILY_N-1)).isoformat())
+        cd = rolling_candles(days, (today - datetime.timedelta(days=DAILY_N-1)).isoformat())
     else:
         cd = daily_candles(days, today.strftime("%Y-%m-01"))
     if not cd:

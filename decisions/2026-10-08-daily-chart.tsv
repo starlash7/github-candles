@@ -9,3 +9,6 @@ ts	phase	decision	why	evidence	result
 2026-10-08	verify	Add check.yml on pull_request rendering all modes with mock data	chart.yml runs only on main/schedule and pushes; PR had no CI signal	.github/workflows/check.yml; https://github.com/starlash7/github-candles/pull/1	passed on PR #1
 2026-10-08	git	Commit chart-daily.svg rendered from real starlash7 data	README embed should show on PR; mock charts must not be committed	chart-daily.svg	verified
 2026-10-08	implement	Remove MA20/MA50 overlay	User decision after review	generate_chart.py; chart-daily.svg	verified
+2026-10-08	plan	Daily price = trailing 7-day total (replaces c = day total for daily mode only)	Raw daily counts return to ~0 often (47/180 zero days), so candles read as bars; a rolling total gives price continuity using only real counts	.context comparison renders; RULES.md	approved by user
+2026-10-08	implement	Daily y-axis auto-scales with 1/2/5 nice ticks; volume opacity 0.7 in daily	Real charts do not anchor at zero; sparse volume was barely visible	generate_chart.py nice_ticks; chart-daily.svg	verified visually
+2026-10-08	verify	year/month unchanged after 7-day change	Existing modes must not change	cmp vs main script, mock and real data	byte-identical
