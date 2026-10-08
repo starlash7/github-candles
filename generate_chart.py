@@ -2,6 +2,7 @@
 """github-candles — contributions as a trading chart.
 MODE=year (default): 52 weekly candles, rolling 1 year.
 MODE=month: daily candles, current month session.
+MODE=daily: 180 daily candles with MA20/MA50 overlay.
 Zero config in Actions: GH_USER auto = repo owner.
 """
 import os, json, datetime, urllib.request
@@ -15,6 +16,8 @@ BG, FRAME   = "#0B0E11", "#1B2130"
 GRID, AXIS  = "#161C26", "#242B38"
 TEXT, SUB   = "#EAECEF", "#6E7887"
 GREEN, RED  = "#0ECB81", "#F6465D"
+MA20_C, MA50_C = "#F0B90B", "#C99BFF"
+DAILY_N = 180
 SANS = "ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif"
 MONO = "ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace"
 
@@ -68,18 +71,25 @@ def weekly_candles(days):
         prev = tot
     return out
 
-def daily_candles(days):
-    month = datetime.date.today().strftime("%Y-%m")
+def daily_candles(days, since):
+    """One candle per day from `since` (ISO date). o=prev day, c=day total."""
     prev, out = None, []
     for date, c in days:
-        if date[:7] < month: prev = c; continue
+        if date < since: prev = c; continue
         o = prev if prev is not None else c
         out.append({"key": datetime.date.fromisoformat(date), "o": o,
                     "h": max(o,c), "l": min(o,c), "c": c, "v": c})
         prev = c
     return out
 
-def render(cd, path, mode):
+def moving_average(days, n):
+    """Trailing n-day mean of daily totals, keyed by date. None until n days exist."""
+    vals, out = [c for _, c in days], {}
+    for i, (date, _) in enumerate(days):
+        out[date] = sum(vals[i-n+1:i+1]) / n if i >= n-1 else None
+    return out
+
+def render(cd, path, mode, mas=()):
     W, H = 920, 430
     PL, AXIS_W, HEAD, VOL_H, XAX, GAP = 18, 64, 88, 56, 30, 12
     plot_w  = W - PL - AXIS_W
@@ -90,7 +100,7 @@ def render(cd, path, mode):
     hi   = max(max(c["h"] for c in cd), 1) * 1.15
     vmax = max(max(c["v"] for c in cd), 1)
     slot = plot_w / max(n, 1)
-    bw   = max(4, min(13, slot * 0.6))
+    bw   = slot * 0.7 if mode == "daily" else max(4, min(13, slot * 0.6))
 
     def y(v):  return HEAD + price_h - (v/hi)*price_h
     def x(i):  return PL + slot*i + slot/2
@@ -106,6 +116,9 @@ def render(cd, path, mode):
     if mode == "year":
         tf_label = "1W · LAST 52W"
         sum_label = ("YTD", f"{total:,}")
+    elif mode == "daily":
+        tf_label = f"1D · LAST {n}D"
+        sum_label = (f"{n}D", f"{total:,}")
     else:
         mname = datetime.date.today().strftime("%b %Y").upper()
         tf_label = f"1D · {mname}"
@@ -133,6 +146,10 @@ def render(cd, path, mode):
     s.append(f'<text x="{rx}" y="54" text-anchor="end" font-family="{MONO}" font-size="11" letter-spacing="0.3">'
              f'<tspan fill="{SUB}">{sum_label[0]}</tspan> <tspan fill="{TEXT}">{sum_label[1]}</tspan>'
              f'  <tspan fill="{SUB}">CANDLES</tspan> <tspan fill="{TEXT}">{n}</tspan></text>')
+    if mas:
+        legend = "  ".join(f'<tspan fill="{SUB}">{label}</tspan> <tspan fill="{col}">{"—" if vals[-1] is None else f"{vals[-1]:.1f}"}</tspan>'
+                           for label, col, vals in mas)
+        s.append(f'<text x="{rx}" y="74" text-anchor="end" font-family="{MONO}" font-size="11" letter-spacing="0.3">{legend}</text>')
     s.append(f'<line x1="{PL}" y1="{HEAD-6}" x2="{W-PL}" y2="{HEAD-6}" stroke="{FRAME}" stroke-width="1"/>')
 
     # watermark
@@ -159,6 +176,12 @@ def render(cd, path, mode):
         s.append(f'<line x1="{cx:.1f}" y1="{y(c["h"]):.1f}" x2="{cx:.1f}" y2="{y(c["l"]):.1f}" stroke="{col}" stroke-width="1"/>')
         s.append(f'<rect x="{cx-bw/2:.1f}" y="{top:.1f}" width="{bw:.1f}" height="{bot-top:.1f}" rx="1" fill="{col}"/>')
 
+    # moving averages (derived from real daily totals, drawn over candles)
+    for label, col, vals in mas:
+        pts = " ".join(f"{x(i):.1f},{y(v):.1f}" for i, v in enumerate(vals) if v is not None)
+        if pts:
+            s.append(f'<polyline points="{pts}" fill="none" stroke="{col}" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round" opacity="0.9"/>')
+
     # volume
     s.append(f'<text x="{PL+8}" y="{vol_top+11}" font-family="{MONO}" font-size="10" letter-spacing="0.5" fill="{SUB}">VOL <tspan fill="{lc}">{last["v"]}</tspan></text>')
     for i, c in enumerate(cd):
@@ -167,11 +190,11 @@ def render(cd, path, mode):
         s.append(f'<rect x="{cx-bw/2:.1f}" y="{vol_top+VOL_H-vh:.1f}" width="{bw:.1f}" height="{max(vh,1):.1f}" rx="1" fill="{col}" opacity="0.42"/>')
 
     # x labels
-    if mode == "year":
+    if mode == "year" or mode == "daily":
         seen = set()
         for i, c in enumerate(cd):
             m = c["key"].strftime("%b").upper()
-            if c["key"].day <= 7 and m not in seen:
+            if c["key"].day <= (7 if mode == "year" else 1) and m not in seen:
                 seen.add(m)
                 s.append(f'<text x="{x(i):.1f}" y="{H-12}" text-anchor="middle" font-family="{MONO}" font-size="10" fill="{SUB}">{m}</text>')
     else:
@@ -185,10 +208,21 @@ def render(cd, path, mode):
 
 def main():
     days = fetch_days() if GH_TOKEN else mock_days()
-    cd = weekly_candles(days) if MODE == "year" else daily_candles(days)
+    today = datetime.date.today()
+    mas = ()
+    if MODE == "year":
+        cd = weekly_candles(days)
+    elif MODE == "daily":
+        cd = daily_candles(days, (today - datetime.timedelta(days=DAILY_N-1)).isoformat())
+        mas = tuple((f"MA{n}", col, [ma.get(c["key"].isoformat()) for c in cd])
+                    for n, col in ((20, MA20_C), (50, MA50_C))
+                    for ma in [moving_average(days, n)])
+    else:
+        cd = daily_candles(days, today.strftime("%Y-%m-01"))
     if not cd:
-        cd = [{"key": datetime.date.today(),"o":0,"h":0,"l":0,"c":0,"v":0}]
-    render(cd, OUT, MODE)
+        cd = [{"key": today,"o":0,"h":0,"l":0,"c":0,"v":0}]
+        mas = ()
+    render(cd, OUT, MODE, mas)
     print(f"rendered {len(cd)} candles · mode={MODE}")
 
 if __name__ == "__main__":

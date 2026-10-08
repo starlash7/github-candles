@@ -14,6 +14,10 @@ Every commit is a trade. Every week prints a candle. Green weeks you shipped, re
 
 *Session view — one candle per day, resets monthly like a real trading session*
 
+<img src="chart-daily.svg" width="100%" alt="180-day daily contribution candles with MA20 and MA50"/>
+
+*Daily view — 180 daily candles with MA20 / MA50 moving averages*
+
 </div>
 
 ---
@@ -26,6 +30,7 @@ Every commit is a trade. Every week prints a candle. Green weeks you shipped, re
 | 🔴 Red candle | You committed less |
 | Volume bars | Raw commit count |
 | Last-price tag | Your latest period's commits |
+| MA20 / MA50 | 20- and 50-day average of daily commits (daily view) |
 | `YTD` / `MTD` | Total contributions in range |
 
 Exchange-grade UI: OHLC readout, right-side price axis, last-price line, Binance-style palette. No stats cards. No trophies. Just price action.
@@ -41,6 +46,7 @@ Works on your **profile repo** (`yourname/yourname`):
    ```html
    <img src="chart-year.svg" width="100%"/>
    <img src="chart-month.svg" width="100%"/>
+   <img src="chart-daily.svg" width="100%"/>
    ```
 3. Repo **Settings → Actions → General → Workflow permissions** → check **Read and write permissions**
 4. **Actions → github candles → Run workflow** once.
@@ -51,22 +57,25 @@ Done. It self-updates daily on the default `GITHUB_TOKEN` — no PAT, no config.
 
 | Option | Where | Values |
 |--------|-------|--------|
-| `MODE` | env in `chart.yml` | `year` (52 weekly candles) / `month` (daily, resets on the 1st) |
+| `MODE` | env in `chart.yml` | `year` (52 weekly candles) / `month` (daily, resets on the 1st) / `daily` (last 180 days + MA20/MA50) |
 | `OUT` | env in `chart.yml` | output filename |
 | Update time | `cron` in `chart.yml` | default `0 15 * * *` = 00:00 KST |
 | Colors | constants in `generate_chart.py` | `GREEN` / `RED` / `BG` etc. |
 
-Run both modes in one job (the default workflow already does):
+Run all modes in one job (the default workflow already does):
 
 ```yaml
 run: |
   MODE=year  OUT=chart-year.svg  python generate_chart.py
   MODE=month OUT=chart-month.svg python generate_chart.py
+  MODE=daily OUT=chart-daily.svg python generate_chart.py
 ```
 
 ## How it works
 
 One Python file, stdlib only — no dependencies. It queries the GitHub GraphQL contributions API with the built-in Actions token, buckets days into weekly or daily candles (open = previous period's count, close = current), and writes a hand-rolled SVG. The chart is just text.
+
+The API only returns one total per day, so there is no real intraday high/low. Candles have no wicks beyond open and close — nothing is invented to look more like a market.
 
 ## FAQ
 
