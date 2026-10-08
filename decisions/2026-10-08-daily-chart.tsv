@@ -6,5 +6,5 @@ ts	phase	decision	why	evidence	result
 2026-10-08	implement	Generalize daily_candles(days, since) instead of rewriting month logic	Month and daily share one function; month output must stay unchanged	cmp of year/month SVG before/after, mock and real data	byte-identical
 2026-10-08	implement	Daily body width = slot*0.7 (~3.3px) without 4px floor	The 4px floor leaves ~0.7px gaps at 180 candles	chart-daily.svg	verified visually
 2026-10-08	implement	MA20 #F0B90B, MA50 #C99BFF	Exchange-style accents distinct from GREEN/RED and legible on BG	chart-daily.svg	verified visually
-2026-10-08	verify	Add check.yml on pull_request rendering all modes with mock data	chart.yml runs only on main/schedule and pushes; PR had no CI signal	.github/workflows/check.yml	see PR checks
+2026-10-08	verify	Add check.yml on pull_request rendering all modes with mock data	chart.yml runs only on main/schedule and pushes; PR had no CI signal	.github/workflows/check.yml; https://github.com/starlash7/github-candles/pull/1	passed on PR #1
 2026-10-08	git	Commit chart-daily.svg rendered from real starlash7 data	README embed should show on PR; mock charts must not be committed	chart-daily.svg	verified
